@@ -1,8 +1,7 @@
 import CardContainer from "@/components/utils/CardContainer";
 import TaskCard from "@/components/utils/TaskCard";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
 import {
   Dialog,
   DialogClose,
@@ -12,13 +11,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface Task {
   _id: string;
@@ -33,6 +43,7 @@ const Board = () => {
   const [description, setDescription] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
   const { boardId } = useParams();
+  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -46,6 +57,16 @@ const Board = () => {
     };
     fetchAllTasks();
   }, []);
+
+  const handleBoardDelete = async () => {
+    try {
+      const response = await axios.delete(`/api/v1/board/${boardId}`);
+      console.log(response.data);
+      router.push("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -112,7 +133,7 @@ const Board = () => {
           description={task.description}
           onDelete={handleDelete}
           onDone={handleDone}
-          onDoing={handleDoing} // Pass the handleDoing function as a prop
+          onDoing={handleDoing}
         />
       ))
     ) : (
@@ -124,12 +145,37 @@ const Board = () => {
     <section>
       <div className="p-4">
         <Dialog>
-          <DialogTrigger>
-            <div className="btn_create flex justify-center items-center gap-1">
-              <Plus width={16} height={16} />
-              <p className="text-sm">Add New Task</p>
-            </div>
-          </DialogTrigger>
+          <div className="flex justify-start items-center gap-4">
+            <DialogTrigger>
+              <div className="btn_create flex justify-center items-center gap-1">
+                <Plus width={16} height={16} />
+                <p className="text-sm">Add New Task</p>
+              </div>
+            </DialogTrigger>
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <div className="cursor-pointer flex justify-center items-center gap-1 bg-red-700 hover:bg-red-800 duration-300 px-6 py-[8px] rounded-full">
+                  <Trash width={16} height={16} />
+                  <p className="text-white text-sm">delete board</p>
+                </div>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="max-w-[300px] sm:max-w-[550px]">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your board from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBoardDelete}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Task</DialogTitle>

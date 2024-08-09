@@ -51,7 +51,7 @@ const Login = () => {
 
       if (result?.error) {
         setError(true);
-        console.error(result.error);
+        console.log(result.error);
       }
       if (result?.ok) {
         const boards = await fetchAllBoards();

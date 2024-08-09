@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import SideBarNav from "./SideBarNav";
-import { SquareKanban } from "lucide-react";
+import { SquareKanban, Trash } from "lucide-react";
 import UserDetail from "./UserDetail";
 import axios from "axios";
+import { Button } from "../ui/button";
 
 interface Board {
   _id: string;

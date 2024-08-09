@@ -1,6 +1,4 @@
 "use client";
-
-import { Button } from "../ui/button";
 import { signOut, useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -15,20 +13,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
-import { useRouter } from "next/navigation"; // Import useRouter for redirection
+import { useRouter } from "next/navigation";
 
 const UserDetail = () => {
   const { data: session, status } = useSession();
-  const router = useRouter(); // Use useRouter for redirection
+  const router = useRouter();
 
   const handleDelete = async () => {
     try {
       const response = await axios.delete("/api/v1/user");
 
       if (response.status === 200) {
-        // Sign out and redirect to the home page
-        await signOut({ redirect: false }); // Do not automatically redirect
-        router.push("/"); // Manually redirect to the home page or any other page
+        await signOut({ redirect: false });
+        router.push("/");
       }
     } catch (error) {
       console.log(error);
@@ -56,7 +53,6 @@ const UserDetail = () => {
         >
           Logout
         </button>
-
         <AlertDialog>
           <AlertDialogTrigger className="btn_danger">
             Delete Account

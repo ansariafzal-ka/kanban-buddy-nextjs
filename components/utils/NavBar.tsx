@@ -17,6 +17,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   boardName: string;
@@ -26,13 +27,15 @@ const NavBar = ({ boardName }: Props) => {
   const [board, setBoard] = useState("");
   const { data: session } = useSession();
   const { toast } = useToast();
+  const router = useRouter();
   const handleSubmit = async (e: any) => {
     try {
-      const res = await axios.post("/api/v1/board", {
+      const response = await axios.post("/api/v1/board", {
         name: board,
         user: session?.user.id,
       });
-      console.log(res.data);
+      console.log(response.data);
+      router.push(`/dashboard/${response.data.newBoard._id}`);
       toast({
         title: "New Board Created Successfully.",
         description: `your new board ${board} has been created successfully.`,
