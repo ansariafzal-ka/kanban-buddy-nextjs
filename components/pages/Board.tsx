@@ -63,6 +63,10 @@ const Board = () => {
       const response = await axios.delete(`/api/v1/board/${boardId}`);
       console.log(response.data);
       router.push("/dashboard");
+      toast({
+        title: "Board Deleted Successfully.",
+        description: `Your board has been deleted successfully.`,
+      });
     } catch (error) {
       console.log(error);
     }

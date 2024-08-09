@@ -40,6 +40,7 @@ const NavBar = ({ boardName }: Props) => {
         title: "New Board Created Successfully.",
         description: `your new board ${board} has been created successfully.`,
       });
+      setBoard("");
     } catch (error) {
       console.log(error);
     }
